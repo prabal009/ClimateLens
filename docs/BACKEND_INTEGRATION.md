@@ -9,7 +9,7 @@
 
 ## 1. Quickstart & Installation
 
-The analytics adapter is pre-installed in the Python 3.13 virtual environment (`/home/prabal/.venvs/nielytics/bin/python`). To import in your FastAPI, Flask, or Django application:
+The analytics adapter is installed in the project virtual environment. To import in your FastAPI, Flask, or Django application:
 
 ```python
 from climatelens import adapter

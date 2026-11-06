@@ -36,6 +36,7 @@ def build_master_excel(
     3. Heatwave Data (MoSPI)
     4. Landslide Data (NASA GLC)
     5. State Boundary Data
+    6. Drought Data (IITM / MoES)
     7. Monthly Max Temperature (IITM)
     8. Flood Data (IFI)
     9. Rainfall Data (IMD)

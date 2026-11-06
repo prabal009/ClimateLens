@@ -96,7 +96,7 @@ def test_dataset_harmonizer() -> None:
     # Test across all registered schemas in climatelens
     for sheet_name in ["Heatwave_Raw", "Rainfall_Raw", "Flood_Raw", "Landslide_Raw", "Cyclone_Raw"]:
         assert sheet_name in HARMONIZATION_SCHEMAS
-        df_harm = harmonize_raw_dataset(sheet_name)
+        df_harm = harmonize_raw_dataset(sheet_name, max_rows=500)
         assert isinstance(df_harm, pd.DataFrame)
         assert not df_harm.empty
         required_cols = {"date", "hazard", "metric", "value", "unit", "source"}

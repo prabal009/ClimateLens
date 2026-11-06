@@ -92,11 +92,40 @@ def assign_states_to_dataframe(
     state_col_out: str = "spatial_state_id",
 ) -> pd.DataFrame:
     """Assign canonical state_id to each row with valid latitude/longitude."""
-    boundary_gdf = get_boundary_gdf(simplified=True)
     res = df.copy()
-    states = [
-        find_state_for_point(lat, lon, boundary_gdf)
-        for lat, lon in zip(res[lat_col], res[lon_col])
-    ]
-    res[state_col_out] = states
+    if res.empty:
+        res[state_col_out] = None
+        return res
+
+    boundary_gdf = get_boundary_gdf(simplified=True)
+    valid_coords = (
+        res[lat_col].notna()
+        & res[lon_col].notna()
+        & (res[lat_col] >= 6.0)
+        & (res[lat_col] <= 38.0)
+        & (res[lon_col] >= 68.0)
+        & (res[lon_col] <= 98.0)
+    )
+
+    boundary_sub = boundary_gdf[["state_id", "geometry"]].rename(
+        columns={"state_id": "_boundary_state_id"}
+    )
+    valid_subset = res.loc[valid_coords]
+    points_gdf = gpd.GeoDataFrame(
+        valid_subset[[c for c in valid_subset.columns if c != "geometry"]],
+        geometry=gpd.points_from_xy(valid_subset[lon_col], valid_subset[lat_col]),
+        crs="EPSG:4326",
+    )
+    joined = gpd.sjoin(points_gdf, boundary_sub, how="left", predicate="within")
+    joined = joined[~joined.index.duplicated(keep="first")]
+
+    res[state_col_out] = joined["_boundary_state_id"]
+
+    # Fallback to nearest boundary for coastal points within ~5km buffer
+    null_mask = res[state_col_out].isna() & valid_coords
+    if null_mask.any():
+        res.loc[null_mask, state_col_out] = [
+            find_state_for_point(lat, lon, boundary_gdf)
+            for lat, lon in zip(res.loc[null_mask, lat_col], res.loc[null_mask, lon_col])
+        ]
     return res

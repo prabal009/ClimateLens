@@ -18,7 +18,7 @@ The foundational data engineering, spatial joins, analytical engines, predictive
 
 ## 2. Alignment with the Updated GitHub Repository (`nielytics` v2.0)
 
-This project is **strictly aligned** with the updated upstream repository `nielytics==0.2.0.dev1` located at `/home/prabal/nielytics`:
+This project is **strictly aligned** with the updated upstream repository `nielytics==0.2.0.dev1` (`https://github.com/prabal009/nielytics`):
 
 1. **Unified Facade (`ClimateAnalytics`):**
    - Implemented via `climatelens.adapter.init_climate_analytics()`. Registers and verifies all historical climate hazard datasets.
@@ -154,36 +154,35 @@ All commands must be executed using the project's Python virtual environment:
 
 ### Environment Setup
 ```bash
-# Path to dedicated environment
-export VENV_PY="/home/prabal/.venvs/nielytics/bin/python"
-export VENV_PYTEST="/home/prabal/.venvs/nielytics/bin/pytest"
+# Activate virtual environment
+source .venv/bin/activate
 ```
 
 ### 1. Run Preprocessing Pipeline
 Processes all raw sources, executes spatial joins against NWIC boundaries, and generates all Parquet files, GeoJSON layers, data quality audits, and the Master Excel workbook:
 ```bash
-$VENV_PY -m climatelens.preprocessing.pipeline
+python -m climatelens.preprocessing.pipeline
 ```
 *Expected runtime:* ~35 seconds with **zero runtime warnings**.
 
 ### 2. Run Full Automated Test Suite
 Runs all 88 test cases covering unit tests, deliverables audits, geospatial joins, and v2 integration:
 ```bash
-$VENV_PYTEST tests/ -v
+pytest tests/ -v
 ```
 *Expected result:* **88 passed, 0 failed**.
 
 ### 3. Verify Zero Deprecation Warnings
 Ensures strict NumPy 2.x and Python 3.13 deprecation compliance:
 ```bash
-$VENV_PYTEST tests/ -v -W error::DeprecationWarning
+pytest tests/ -v -W error::DeprecationWarning
 ```
 *Expected result:* **88 passed, 0 warnings**.
 
 ### 4. Adapter Smoke Test
 Executes a live check across forecasting, projections, multi-hazard, and chart generation:
 ```bash
-$VENV_PY -c "
+python -c "
 from climatelens.adapter import (
     get_climate_projections,
     get_temperature_forecast,

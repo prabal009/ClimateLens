@@ -1,4 +1,4 @@
-git+https://github.com/prabal009/nielytics.git#egg=nielytics
+git+https://github.com/prabal009/nielytics.git@feature/v2-enhancements#egg=nielytics
 pandas>=2.0.0
 numpy>=1.24.0
 geopandas>=0.14.0

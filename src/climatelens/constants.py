@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -17,9 +18,10 @@ RAW_CACHE_DIR = DATA_DIR / "raw_cache"
 # Fallback search paths for raw datasets
 RAW_DATA_SEARCH_PATHS = [
     RAW_DATA_DIR,
-    Path("/run/media/prabal/SANDISK E/le moksh"),
-    Path("/home/prabal/Desktop/nielytics raw dataset"),
 ]
+_env_data_dir = os.getenv("CLIMATELENS_DATA_DIR")
+if _env_data_dir:
+    RAW_DATA_SEARCH_PATHS.append(Path(_env_data_dir))
 
 # 36 Canonical States / Union Territories of India (aligned with NWIC GeoJSON 2025)
 # Key: canonical state_id (uppercase with underscores)

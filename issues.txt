@@ -1,0 +1,320 @@
+================================================================================
+CLIMATELENS (prabal009/ClimateLens) - CODEBASE AUDIT & ISSUE REPORT
+Date: 2026-11-06
+Target Repository: https://github.com/prabal009/ClimateLens.git
+================================================================================
+
+TABLE OF CONTENTS
+-----------------
+1. CRITICAL ISSUES (Runtime failures, broken dependencies, import crashes)
+   - Issue 1: Broken Upstream Dependency Specification in requirements.txt & pyproject.toml
+   - Issue 2: Fatal NameError on Module Import in adapter.py (logger defined after invocation)
+   - Issue 3: Invalid Hazard Registration in init_climate_analytics() (adapter.py)
+   - Issue 4: Missing Pytest pythonpath Configuration in pyproject.toml
+
+2. HIGH-PRIORITY ISSUES (Crashes, severe performance bottlenecks, data logic errors)
+   - Issue 5: Severe Test Suite & Pipeline Hang on Cyclone_Raw Harmonization
+   - Issue 6: Unhandled ValueError Crash on Invalid State Input in adapter.compare_states()
+   - Issue 7: Missing State ID Normalization in Multi-Hazard Scoring (multi_hazard.py)
+   - Issue 8: 200+ DeprecationWarnings Break -W error::DeprecationWarning Test Execution
+
+3. MEDIUM-PRIORITY ISSUES (API contract discrepancies, efficiency, security/privacy)
+   - Issue 9: Hardcoded Developer Machine Paths Leaked in constants.py and understand.md
+   - Issue 10: Inefficient Python List-Comprehension Spatial Point-in-Polygon in spatial_join.py
+   - Issue 11: False-Positive status: "ok" for Out-of-Bounds Years in get_rainfall_map()
+
+4. LOW-PRIORITY & DOCUMENTATION GAPS
+   - Issue 12: Missing Sheet 6 in master_excel.py Docstring Enumeration
+   - Issue 13: Off-By-One Step Numbering Log Inconsistency in pipeline.py
+
+================================================================================
+1. CRITICAL ISSUES
+================================================================================
+
+[ISSUE 1] Broken Upstream Dependency Specification
+--------------------------------------------------
+- Severity: CRITICAL
+- Location:
+    * requirements.txt (Line 1)
+    * pyproject.toml (Line 12)
+- Description:
+    Both requirements.txt and pyproject.toml specify:
+        git+https://github.com/prabal009/nielytics.git#egg=nielytics
+    Because no branch/tag is specified, pip defaults to the 'main' branch.
+    The 'main' branch currently hosts nielytics v0.1.0, whereas ClimateLens
+    was built against and strictly requires nielytics v0.2.0.dev1 (currently on
+    branch 'feature/v2-enhancements').
+- Impact:
+    Running 'pip install -r requirements.txt' or 'pip install -e .' installs
+    v0.1.0. All subsequent imports of ClimateAnalytics, DatasetHarmonizer,
+    TemperatureForecaster, ClimateProjectionEngine, and
+    nielytics.geospatial.india_names fail with ImportError / ModuleNotFoundError.
+    The entire package is broken upon fresh clone and installation.
+- Recommended Fix:
+    Update requirements.txt:
+        git+https://github.com/prabal009/nielytics.git@feature/v2-enhancements#egg=nielytics
+    Update pyproject.toml:
+        "nielytics @ git+https://github.com/prabal009/nielytics.git@feature/v2-enhancements"
+    Or merge 'feature/v2-enhancements' into 'main' and tag a release.
+
+
+[ISSUE 2] Fatal NameError on Module Import in adapter.py
+--------------------------------------------------------
+- Severity: CRITICAL
+- Location:
+    * src/climatelens/adapter.py (Lines 129, 135-136)
+- Description:
+    On line 135, 'analytics_facade = init_climate_analytics()' is called at
+    module load time. 'logger = logging.getLogger(__name__)' is defined on line
+    136, AFTER init_climate_analytics().
+    When init_climate_analytics() catches an exception (e.g. line 128), it runs:
+        except Exception as exc:
+            logger.warning("ClimateAnalytics initialization warning: %s", exc)
+    Because 'logger' has not yet been assigned in the module namespace, Python
+    raises:
+        NameError: name 'logger' is not defined
+- Impact:
+    Any script or service importing 'from climatelens import adapter' crashes
+    immediately during import.
+- Recommended Fix:
+    Move 'logger = logging.getLogger(__name__)' up to line 11 (right after
+    standard library imports).
+
+
+[ISSUE 3] Invalid Hazard Registration in init_climate_analytics()
+-----------------------------------------------------------------
+- Severity: CRITICAL
+- Location:
+    * src/climatelens/adapter.py (Lines 84-85)
+- Description:
+    In init_climate_analytics(), rainfall is registered with:
+        schema_rf = HarmonizationSchema(hazard="rainfall", metric="rainfall", ...)
+        ca.register_dataset("rainfall", rf_input, schema=schema_rf)
+    However, nielytics.harmonization.schema.VALID_HAZARDS strictly defines:
+        VALID_HAZARDS = frozenset({'cyclone', 'drought', 'flood', 'heatwave', 'landslide'})
+    'rainfall' is not a valid hazard in nielytics.
+- Impact:
+    Every startup triggers:
+        nielytics.exceptions.ValidationError: Invalid hazard: 'rainfall'.
+        Must be one of ['cyclone', 'drought', 'flood', 'heatwave', 'landslide']
+    Combined with Issue 2, this caused an unhandled crash on startup.
+- Recommended Fix:
+    In loader.py (line 47), the author mapped rainfall to hazard="flood".
+    Either change hazard="flood" in adapter.py line 84 or omit registering
+    rainfall directly in the nielytics facade.
+
+
+[ISSUE 4] Missing Pytest pythonpath Configuration in pyproject.toml
+-------------------------------------------------------------------
+- Severity: CRITICAL
+- Location:
+    * pyproject.toml
+- Description:
+    The codebase uses the standard 'src/' layout ('src/climatelens/').
+    However, pyproject.toml does not configure pytest to include 'src' in sys.path.
+- Impact:
+    Running 'pytest tests/ -v' as documented in README.md immediately fails
+    during test collection with:
+        ModuleNotFoundError: No module named 'climatelens'
+    across all 13 test files unless the user manually exports PYTHONPATH or
+    installs the package in editable mode.
+- Recommended Fix:
+    Add to pyproject.toml:
+        [tool.pytest.ini_options]
+        pythonpath = ["src"]
+
+
+================================================================================
+2. HIGH-PRIORITY ISSUES
+================================================================================
+
+[ISSUE 5] Severe Test Suite & Pipeline Hang on Cyclone_Raw Harmonization
+------------------------------------------------------------------------
+- Severity: HIGH
+- Location:
+    * src/climatelens/preprocessing/loader.py (Lines 298-300)
+    * tests/test_nielytics_v2.py (Lines 97-99)
+- Description:
+    In test_dataset_harmonizer(), the test iterates over:
+        ["Heatwave_Raw", "Rainfall_Raw", "Flood_Raw", "Landslide_Raw", "Cyclone_Raw"]
+    and calls harmonize_raw_dataset(sheet_name).
+    'Cyclone_Raw' contains 62,893 rows and 174 columns.
+    nielytics.DatasetHarmonizer.harmonize() iterates using:
+        for idx, row in frame.iterrows():
+    Evaluating 62,893 rows with string regexes, datetime conversions, and
+    spatial coordinate parsing takes >15-20 minutes in pure Python.
+- Impact:
+    Pytest hangs indefinitely on test_dataset_harmonizer(). CI pipelines
+    and automated test runs will time out.
+- Recommended Fix:
+    In harmonize_raw_dataset() or test_dataset_harmonizer(), pass a row limit
+    (e.g., .head(500) as was done in adapter.py line 119) or vectorize
+    the harmonization checks in nielytics.
+
+
+[ISSUE 6] Unhandled ValueError Crash in adapter.compare_states()
+----------------------------------------------------------------
+- Severity: HIGH
+- Location:
+    * src/climatelens/engine/comparison.py (Lines 104-107)
+    * src/climatelens/adapter.py (Lines 615-625)
+- Description:
+    In comparison.py, invalid state inputs trigger:
+        if not sid_a or sid_a not in STATES_MAP:
+            raise ValueError(f"Invalid state_a: '{state_a}'")
+    In adapter.py, compare_states() directly calls _compare_states_engine()
+    without a try/except block catching ValueError.
+- Impact:
+    Calling adapter.compare_states("INVALID", "MAHARASHTRA", "annual_rainfall")
+    crashes with an unhandled ValueError. This directly violates the backend
+    contract in BACKEND_INTEGRATION.md, which guarantees all adapter endpoints
+    return safe JSON payloads ({status: "no_data", ...}) without crashing.
+- Recommended Fix:
+    Catch ValueError in adapter.compare_states():
+        except ValueError as exc:
+            return _sanitize_for_json({
+                "status": "no_data",
+                "message": str(exc),
+                "data": {},
+                "meta": {...}
+            })
+
+
+[ISSUE 7] Missing State Normalization in Multi-Hazard Scoring
+-------------------------------------------------------------
+- Severity: HIGH
+- Location:
+    * src/climatelens/engine/multi_hazard.py (Line 57)
+- Description:
+    Line 57 reads:
+        target_sids = [state_id] if state_id and state_id in STATES_MAP else list(STATES_MAP.keys())
+    'state_id' is checked against STATES_MAP without first calling
+    normalize_state_id(state_id).
+- Impact:
+    If a user or frontend passes "Maharashtra", "maharashtra", or "Orissa",
+    'state_id in STATES_MAP' is False. The function silently falls back to
+    calculating scores for ALL 36 states rather than returning the requested state.
+- Recommended Fix:
+    Normalize state_id before the check:
+        sid = normalize_state_id(state_id) if state_id else None
+        target_sids = [sid] if sid and sid in STATES_MAP else list(STATES_MAP.keys())
+
+
+[ISSUE 8] 200+ DeprecationWarnings Break '-W error::DeprecationWarning'
+------------------------------------------------------------------------
+- Severity: HIGH
+- Location:
+    * Upstream nielytics (hazards/_common.py, hazards/multi_hazard.py, forecasting/temperature.py)
+    * README.md (Lines 5, 97)
+    * understand.md (Line 35)
+- Description:
+    The README displays a 'Zero Warnings' badge and specifies running:
+        pytest tests/ -v -W error::DeprecationWarning
+    In reality, running the test suite produces over 200 DeprecationWarnings:
+        DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated,
+        and will raise an error in the future.
+    caused by expressions like 'day - current[-1][0] != pd.Timedelta(days=1)'
+    and 'f_date - pd.Timedelta(days=antecedent_days)'.
+- Impact:
+    Running the test command recommended in the README immediately fails with
+    fatal test errors due to '-W error'.
+- Recommended Fix:
+    In nielytics, replace bare integer operations on pd.Timedelta with
+    explicit np.timedelta64(antecedent_days, 'D') or datetime.timedelta.
+
+
+================================================================================
+3. MEDIUM-PRIORITY ISSUES
+================================================================================
+
+[ISSUE 9] Hardcoded Developer Machine Paths Leaked
+--------------------------------------------------
+- Severity: MEDIUM
+- Location:
+    * src/climatelens/constants.py (Lines 20-22)
+    * understand.md (Line 21)
+- Description:
+    constants.py contains hardcoded absolute paths specific to the developer's
+    local machine:
+        RAW_DATA_SEARCH_PATHS = [
+            RAW_DATA_DIR,
+            Path("/run/media/prabal/SANDISK E/le moksh"),
+            Path("/home/prabal/Desktop/nielytics raw dataset"),
+        ]
+    understand.md line 21 references:
+        /home/prabal/nielytics
+- Impact:
+    Exposes private local usernames and removable drive labels in a public git
+    repository. Causes unnecessary disk access attempts on other machines.
+- Recommended Fix:
+    Remove hardcoded paths and rely strictly on project-relative paths
+    or environment variables (e.g., os.getenv("CLIMATELENS_DATA_DIR")).
+
+
+[ISSUE 10] Inefficient Python List-Comprehension Spatial Point-in-Polygon
+-------------------------------------------------------------------------
+- Severity: MEDIUM
+- Location:
+    * src/climatelens/geospatial/spatial_join.py (Lines 97-100)
+- Description:
+    assign_states_to_dataframe() performs point-in-polygon queries using a
+    pure-Python list comprehension:
+        states = [
+            find_state_for_point(lat, lon, boundary_gdf)
+            for lat, lon in zip(res[lat_col], res[lon_col])
+        ]
+    calling Point.contains() iteratively.
+- Impact:
+    High CPU overhead and slow execution on datasets with tens of thousands
+    of coordinates (such as cyclone track points).
+- Recommended Fix:
+    Utilize GeoPandas vectorized spatial join (gpd.sjoin):
+        points_gdf = gpd.GeoDataFrame(
+            res, geometry=gpd.points_from_xy(res[lon_col], res[lat_col]), crs="EPSG:4326"
+        )
+        joined = gpd.sjoin(points_gdf, boundary_gdf[["state_id", "geometry"]], how="left", predicate="within")
+
+
+[ISSUE 11] False-Positive status: "ok" for Out-of-Bounds Years in get_rainfall_map()
+------------------------------------------------------------------------------------
+- Severity: MEDIUM
+- Location:
+    * src/climatelens/hazards/rainfall_hazard.py
+    * src/climatelens/adapter.py
+- Description:
+    Calling adapter.get_rainfall_map(1800) returns a list where all 36 states
+    contain null values ('monsoon_actual_mm: None', 'monsoon_category: "No Data"').
+    However, the top-level response reports 'status: "ok"' instead of 'status: "no_data"'.
+- Impact:
+    Frontend consumers receive an "ok" status for an empty map with no data.
+- Recommended Fix:
+    If all records in the return payload have category "No Data", return
+    status: "no_data".
+
+
+================================================================================
+4. LOW-PRIORITY & DOCUMENTATION GAPS
+================================================================================
+
+[ISSUE 12] Missing Sheet 6 in master_excel.py Docstring
+-------------------------------------------------------
+- Severity: LOW
+- Location:
+    * src/climatelens/preprocessing/master_excel.py (Lines 38-40)
+- Description:
+    The docstring lists sheet numbers as:
+        5. State Boundary Data
+        7. Monthly Max Temperature (IITM)
+    Sheet 6 (Drought Data) is implemented in code but omitted from the docstring list.
+
+[ISSUE 13] Off-by-One Step Log Numbering in pipeline.py
+-------------------------------------------------------
+- Severity: LOW
+- Location:
+    * src/climatelens/preprocessing/pipeline.py (Lines 41, 47, 53)
+- Description:
+    Step 1 logs as "[1/9]", Step 2 logs as "[2/9]", but Step 3 switches to "[3/10]".
+    Total steps should consistently be 10.
+================================================================================
+END OF REPORT
+================================================================================

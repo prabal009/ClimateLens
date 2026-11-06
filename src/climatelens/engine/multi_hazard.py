@@ -54,7 +54,8 @@ def compute_state_composite_hazard_scores(
         rf_df = pd.read_parquet(rf_path)
         rf_by_state = rf_df.groupby("state_id")["daily_actual_mm"].mean().to_dict()
 
-    target_sids = [state_id] if state_id and state_id in STATES_MAP else list(STATES_MAP.keys())
+    sid = normalize_state_id(state_id) if state_id else None
+    target_sids = [sid] if sid and sid in STATES_MAP else list(STATES_MAP.keys())
     scores: dict[str, dict[str, Any]] = {}
 
     for sid in target_sids:

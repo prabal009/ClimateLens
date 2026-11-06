@@ -10,6 +10,8 @@ import json
 import logging
 from typing import Any
 
+logger = logging.getLogger(__name__)
+
 import numpy as np
 import pandas as pd
 from nielytics import ClimateAnalytics
@@ -81,7 +83,7 @@ def init_climate_analytics() -> ClimateAnalytics:
             rf_input = rf_df[["date", "entity_name", "daily_actual_mm"]].rename(
                 columns={"daily_actual_mm": "rainfall", "entity_name": "state"}
             ).dropna()
-            schema_rf = HarmonizationSchema(hazard="rainfall", metric="rainfall", value_column="rainfall", state_column="state")
+            schema_rf = HarmonizationSchema(hazard="flood", metric="rainfall", value_column="rainfall", state_column="state")
             ca.register_dataset("rainfall", rf_input, schema=schema_rf)
 
         # 3. Flood
@@ -133,7 +135,6 @@ def init_climate_analytics() -> ClimateAnalytics:
 
 # Initialize unified facade on startup
 analytics_facade = init_climate_analytics()
-logger = logging.getLogger(__name__)
 
 
 def _sanitize_for_json(obj: Any) -> Any:
@@ -219,9 +220,10 @@ def get_rainfall_map(year: int = 2026) -> dict[str, Any]:
     """Retrieve state-wise rainfall choropleth layer with departure categories and color codes."""
     res = get_rainfall_choropleth(year=year)
     states_data = res.get("states", [])
+    has_data = any(s.get("monsoon_category") != "No Data" for s in states_data)
 
     return _sanitize_for_json({
-        "status": "ok",
+        "status": "ok" if has_data else "no_data",
         "data": states_data,
         "meta": {
             "metric": "rainfall_departure_category",
@@ -231,7 +233,7 @@ def get_rainfall_map(year: int = 2026) -> dict[str, Any]:
             "period": {"start": f"{year}-06-01", "end": f"{year}-09-30"},
             "source_ids": ["imd_rainfall_daily"],
             "method": "Cumulative seasonal departure from normal: ((Actual - Normal) / Normal) * 100",
-            "observation_count": len(states_data),
+            "observation_count": sum(1 for s in states_data if s.get("monsoon_category") != "No Data"),
             "legend": res.get("legend", {}),
             "limitations": ["Represents seasonal cumulative rainfall as of September 30 from IMD NWIC portal."],
         },
@@ -618,7 +620,28 @@ def compare_states(
     period: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Compare two Indian states on an identical metric within the same temporal window."""
-    res = _compare_states_engine(state_a, state_b, metric, period)
+    try:
+        res = _compare_states_engine(state_a, state_b, metric, period)
+    except ValueError as exc:
+        return _sanitize_for_json({
+            "status": "no_data",
+            "message": str(exc),
+            "data": {},
+            "meta": {
+                "metric": f"state_comparison_{metric}",
+                "unit": "dimensionless",
+                "geographic_level": "state",
+                "time_resolution": "multi-year",
+                "period": period or {},
+                "source_ids": ["imd_rainfall_daily", "iitd_flood_inventory", "riseuppant_landslide_inventory"],
+                "method": "standardized comparative ratio and percentage difference",
+                "observation_count": 0,
+                "limitations": [
+                    "Division by zero is strictly protected.",
+                    "Comparison of national drought or regional temperature at state level is prohibited.",
+                ],
+            },
+        })
 
     return _sanitize_for_json({
         "status": res.get("status", "ok"),

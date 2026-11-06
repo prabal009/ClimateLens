@@ -70,3 +70,12 @@ def test_adapter_invalid_input_handling():
     # Future year with no cyclone data
     res_cy = adapter.get_time_machine_data(2099)
     assert res_cy["status"] == "no_data"
+
+    # Invalid state in comparison
+    res_cmp = adapter.compare_states("INVALID_A", "MAHARASHTRA", "annual_rainfall")
+    assert res_cmp["status"] == "no_data"
+    assert "Invalid state_a" in res_cmp["message"]
+
+    # Out of bounds year in rainfall map
+    res_1800 = adapter.get_rainfall_map(1800)
+    assert res_1800["status"] == "no_data"

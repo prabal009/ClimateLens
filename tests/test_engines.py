@@ -4,7 +4,10 @@ import pytest
 
 from climatelens.engine.comparison import compare_states
 from climatelens.engine.insight_engine import generate_insights
-from climatelens.engine.multi_hazard import investigate_multi_hazard
+from climatelens.engine.multi_hazard import (
+    compute_state_composite_hazard_scores,
+    investigate_multi_hazard,
+)
 from climatelens.engine.time_machine import get_time_machine_data
 
 
@@ -84,3 +87,8 @@ def test_multi_hazard_explorer():
     assert "scientific_caveat" in res
     for a in res["associations"]:
         assert a["causation_established"] is False
+
+
+def test_multi_hazard_state_normalization():
+    res = compute_state_composite_hazard_scores("Maharashtra")
+    assert list(res.keys()) == ["MAHARASHTRA"]

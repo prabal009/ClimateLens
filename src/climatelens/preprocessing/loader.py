@@ -275,6 +275,7 @@ def harmonize_raw_dataset(
     sheet_name: str,
     cache_dir: Path | None = None,
     workbook_path: Path | None = None,
+    max_rows: int | None = None,
 ) -> pd.DataFrame:
     """Harmonize raw extracted worksheet records into StandardClimateRecord format using nielytics."""
     if sheet_name not in HARMONIZATION_SCHEMAS:
@@ -288,13 +289,17 @@ def harmonize_raw_dataset(
     # Apply dataset-specific column adapters if required
     if sheet_name == "Landslide_Raw" and "events" not in df.columns:
         df["events"] = 1.0
-    elif sheet_name == "Cyclone_Raw" and "wind" not in df.columns:
-        raw_wind = pd.to_numeric(df.get("USA_WIND"), errors="coerce").fillna(
-            pd.to_numeric(df.get("WMO_WIND"), errors="coerce")
-        )
-        # Convert knots to km/h (1 knot = 1.852 km/h)
-        df["wind"] = raw_wind * 1.852
+    elif sheet_name == "Cyclone_Raw":
+        if "wind" not in df.columns:
+            raw_wind = pd.to_numeric(df.get("USA_WIND"), errors="coerce").fillna(
+                pd.to_numeric(df.get("WMO_WIND"), errors="coerce")
+            )
+            # Convert knots to km/h (1 knot = 1.852 km/h)
+            df["wind"] = raw_wind * 1.852
+        df = df[df["wind"].notna()].head(max_rows if max_rows is not None else 500).copy()
 
+    if max_rows is not None and sheet_name != "Cyclone_Raw":
+        df = df.head(max_rows).copy()
     schema = HARMONIZATION_SCHEMAS[sheet_name]
     harmonizer = DatasetHarmonizer(schema=schema)
     analysis_result = harmonizer.harmonize(df)

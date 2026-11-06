@@ -38,13 +38,13 @@ def run_pipeline(output_dir: Path | None = None) -> dict[str, Any]:
 
     # Step 1: Boundaries
     t_step = time.time()
-    logger.info("[1/9] Processing state boundaries and GeoJSON layers...")
+    logger.info("[1/10] Processing state boundaries and GeoJSON layers...")
     clean_gdf, simp_gdf = process_boundaries(out_dir)
     logger.info(" -> Boundaries done in %.2fs (36 features)", time.time() - t_step)
 
     # Step 2: Rainfall
     t_step = time.time()
-    logger.info("[2/9] Processing IMD daily rainfall data...")
+    logger.info("[2/10] Processing IMD daily rainfall data...")
     rf_daily, rf_year = process_rainfall(out_dir)
     logger.info(" -> Rainfall done in %.2fs (%d daily, %d state-year rows)", time.time() - t_step, len(rf_daily), len(rf_year))
 
