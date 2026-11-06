@@ -85,7 +85,7 @@ def build_master_excel(
         {"Section": "Competition", "Content": "NIErnaya 2026 — Round 2"},
         {"Section": "Team Role", "Content": "Teammate 1: Data Science, Climate Data Engineering & Analytical Foundation"},
         {"Section": "Primary Data Source", "Content": "XeroFlux Dataset.xlsx (Authoritative Phase 2 Raw Source)"},
-        {"Section": "Core Analytics Library", "Content": "NIElytics (v0.1.0) by Prabal Pathak"},
+        {"Section": "Core Analytics Library", "Content": "NIElytics (v2.0) by Prabal Pratap Singh"},
         {"Section": "Disaster Domains Covered", "Content": "5 Core Categories: Heatwaves, Rainfall, Floods, Drought, Cyclones, and Landslides"},
         {"Section": "Key Deliverables", "Content": "Parquet archives, validated GeoJSON layers, Plotly chart specs, unified adapter, and Master Excel"},
         {"Section": "Scientific Integrity Note", "Content": "Zero data fabrication. Missing values retained as N/A. National drought and regional temperatures strictly preserved at authoritative spatial resolutions."},

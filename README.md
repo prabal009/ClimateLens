@@ -129,4 +129,4 @@ For detailed API schemas, parameter types, and endpoint tables, see **[understan
 
 ## License
 
-Developed for **NIErnaya 2026 Round 2**. Powered by **NIElytics v2.0** by Prabal Pathak.
+Developed for **NIErnaya 2026 Round 2**. Powered by **NIElytics v2.0** by Prabal Pratap Singh.
