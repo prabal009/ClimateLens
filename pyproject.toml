@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "climatelens"
+version = "0.1.0"
+description = "ClimateLens India - Scientific and Analytical Foundation"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "nielytics @ git+https://github.com/prabal009/nielytics.git",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "geopandas>=0.14.0",
+    "shapely>=2.0.0",
+    "pyarrow>=14.0.0",
+    "openpyxl>=3.1.0",
+    "plotly>=5.18.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

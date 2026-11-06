@@ -1,0 +1,335 @@
+CLIMATELENS INDIA
+DATASET SOURCES AND REFERENCES
+==============================================
+
+PROJECT: ClimateLens India
+LIBRARY: NIElytics
+TOTAL DATASETS: 7
+
+==============================================
+1. LANDSLIDES - INDIA LANDSLIDE DATASET
+==============================================
+
+Dataset Name: India Landslide CSV
+Filename: landslide_data_india.csv
+
+Source: riseuppant, GitHub
+Repository: Disaster_Management
+Format: CSV
+Coverage: India
+
+Citation:
+riseuppant. (n.d.). India Landslide Dataset
+[CSV dataset]. GitHub.
+
+Dataset Source:
+https://github.com/riseuppant/Disaster_Management/blob/main/landslide_data_india.csv
+
+Direct Download:
+https://raw.githubusercontent.com/riseuppant/Disaster_Management/main/landslide_data_india.csv
+
+Purpose:
+Used to analyze historical landslide occurrences
+and visualize landslide locations across India.
+
+Note:
+This is a community-hosted dataset. Its original
+scientific source has not been verified.
+
+
+==============================================
+2. INDIA BOUNDARIES - STATE BOUNDARY DATASET
+==============================================
+
+Dataset Name: State Boundary GeoJSON
+Filename: state_nwic_geojson.zip
+
+Source: National Water Informatics Centre (NWIC)
+Organization: Ministry of Jal Shakti,
+Government of India
+Format: ZIP (GeoJSON)
+Coverage: All Indian States and Union Territories
+
+Citation:
+National Water Informatics Centre. (2025).
+State Boundary [Geospatial dataset].
+National Water Data Portal, Government of India.
+
+Dataset Source:
+https://nwdp.nwic.gov.in/dataset/dd960900-34cc-4486-a95c-83200d2f2c7b
+
+Direct Download:
+https://nwdp.nwic.gov.in/dataset/dd960900-34cc-4486-a95c-83200d2f2c7b/resource/f039e721-132c-4a24-9e5e-07af03064b4d/download/state_nwic_geojson.zip
+
+Purpose:
+Used to display the interactive India map,
+identify state boundaries, and visualize
+state-wise climate and disaster information.
+
+
+==============================================
+3. DROUGHT - HISTORICAL NATIONAL DROUGHT DATA
+==============================================
+
+Dataset Name: India Drought Area Time Series
+Filename: India_Drought_Area_Timeseries.txt
+
+Source: India Drought Monitor
+Organization: Water and Climate Lab,
+Indian Institute of Technology Gandhinagar
+Format: TXT
+Coverage: India
+
+Citation:
+Water and Climate Lab, IIT Gandhinagar. (n.d.).
+India Drought Monitor - National Drought Area
+Time Series [TXT dataset].
+Indian Institute of Technology Gandhinagar.
+
+Official Website:
+https://indiadroughtmonitor.in/
+
+Dataset Source:
+https://indiadroughtmonitor.in/data-download.html
+
+Direct Download:
+https://indiadroughtmonitor.in/data/India_Drought_Area_Timeseries.txt
+
+Purpose:
+Used to analyze historical drought patterns,
+monitor changes in drought-affected areas,
+and study drought severity across India.
+
+Note:
+The selected time series is national-level data.
+It does not independently provide district-wise
+drought severity.
+
+
+==============================================
+4. HEAT - HISTORICAL MAXIMUM TEMPERATURE DATA
+==============================================
+
+Dataset Name: Historical India Maximum Temperature
+Filename: NEW-TXREGION.TXT
+
+Source: Indian Institute of Tropical Meteorology
+Organization: IITM Pune / India Meteorological
+Department (IMD)
+Format: TXT
+Coverage: India and climatic regions
+Time Period: 1901-2007
+
+Citation:
+Indian Institute of Tropical Meteorology. (2012).
+IITM Indian Regional Monthly Surface Air
+Temperature Dataset: All-India and Regional
+Maximum Temperatures (1901-2007)
+[TXT dataset]. IITM Pune.
+
+Direct Download:
+https://www.tropmet.res.in/data/data-archival/txtn/NEW-TXREGION.TXT
+
+Dataset Documentation:
+https://www.tropmet.res.in/data/data-archival/txtn/README.pdf
+
+Purpose:
+Used to analyze historical maximum-temperature
+patterns, identify long-term warming trends,
+and compare regional temperature variations.
+
+Note:
+Monthly temperature records are suitable for
+climate trend analysis but are insufficient
+for identifying individual daily heatwave events.
+
+
+==============================================
+5. FLOOD - INDIA FLOOD EVENTS DATASET
+==============================================
+
+Dataset Name: India Flood Inventory
+Filename: India_Flood_Inventory_v3.csv
+
+Source: HydroSense Lab
+Organization: Indian Institute of Technology Delhi
+Repository: Zenodo
+Format: CSV
+Coverage: India
+Time Period: 1967-2023
+
+Citation:
+Saharia, M. (2025).
+India Flood Inventory-Impacts (IFI-Impacts),
+1967-2023, Version 4 [Dataset]. Zenodo.
+
+DOI:
+https://doi.org/10.5281/zenodo.16994648
+
+Dataset Source:
+https://zenodo.org/records/16994648
+
+Direct Download:
+https://zenodo.org/records/16994648/files/India_Flood_Inventory_v3.csv?download=1
+
+Related Research:
+https://doi.org/10.1007/s11069-021-04698-6
+
+Purpose:
+Used to analyze historical flood events,
+identify flood-affected regions, compare
+flood occurrences, and visualize flood
+patterns across Indian states and districts.
+
+
+==============================================
+6. RAINFALL - IMD STATE-WISE RAINFALL DATA
+==============================================
+
+Dataset Name: Rainfall StateWise Daily IMD
+Filename: rainfall_statewise_daily_imd.csv
+
+Source: India Meteorological Department (IMD)
+Organization: National Water Informatics Centre
+Ministry of Jal Shakti, Government of India
+Format: CSV
+Coverage: Indian States
+
+Citation:
+India Meteorological Department. (n.d.).
+Rainfall Daily IMD - StateWise Daily Rainfall
+[CSV dataset]. National Water Data Portal,
+National Water Informatics Centre,
+Government of India.
+
+Dataset Source:
+https://nwdp.nwic.gov.in/dataset/rainfall-daily-imd
+
+Direct Download:
+https://nwdp.nwic.gov.in/dataset/9380580f-9bf0-4708-9773-0cea3cbc595a/resource/acd3023c-df96-4af8-8815-a7393cb80839/download/rainfall_statewise_daily_imd.csv
+
+Purpose:
+Used to analyze rainfall distribution,
+historical rainfall variations, rainfall
+anomalies, and regional rainfall patterns.
+
+The dataset can also support drought
+and extreme-rainfall analysis.
+
+
+==============================================
+7. CYCLONES - HISTORICAL NORTH INDIAN OCEAN DATA
+==============================================
+
+Dataset Name: IBTrACS North Indian Ocean
+Filename: ibtracs.NI.list.v04r01.csv
+
+Source: National Oceanic and Atmospheric
+Administration (NOAA)
+
+Organization: National Centers for
+Environmental Information (NCEI)
+
+Full Name:
+International Best Track Archive for
+Climate Stewardship (IBTrACS)
+
+Format: CSV
+Coverage: North Indian Ocean,
+including the Bay of Bengal and Arabian Sea
+
+Citation:
+Gahtan, J., Knapp, K. R., Schreck, C. J.,
+Diamond, H. J., Kossin, J. P., & Kruk, M. C.
+(2024). International Best Track Archive
+for Climate Stewardship (IBTrACS),
+Version 4r01 [Dataset].
+NOAA National Centers for Environmental
+Information.
+
+DOI:
+https://doi.org/10.25921/82ty-9e16
+
+Dataset Source:
+https://www.ncei.noaa.gov/products/international-best-track-archive
+
+Direct Download:
+https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r01/access/csv/ibtracs.NI.list.v04r01.csv
+
+Related Research:
+https://doi.org/10.1175/2009BAMS2755.1
+
+Purpose:
+Used to visualize historical cyclone tracks,
+analyze cyclone intensity, wind speeds,
+atmospheric pressure, and identify areas
+historically exposed to cyclones near India.
+
+
+==============================================
+DATASET SUMMARY
+==============================================
+
+1. Landslides:
+   India Landslide CSV
+   Source: GitHub (riseuppant)
+
+2. India Boundaries:
+   State Boundary GeoJSON
+   Source: National Water Informatics Centre
+
+3. Drought:
+   India Drought Area Time Series
+   Source: IIT Gandhinagar
+
+4. Heat:
+   Historical India Maximum Temperature
+   Source: IITM Pune / IMD
+
+5. Flood:
+   India Flood Inventory
+   Source: IIT Delhi / Zenodo
+
+6. Rainfall:
+   IMD State-wise Daily Rainfall
+   Source: IMD / National Water Data Portal
+
+7. Cyclones:
+   IBTrACS North Indian Ocean
+   Source: NOAA / NCEI
+
+
+==============================================
+DATA USAGE IN CLIMATELENS INDIA
+==============================================
+
+The ClimateLens India project integrates
+multiple historical environmental and
+disaster datasets from Indian government
+agencies, research institutions, and
+international scientific organizations.
+
+The NIElytics Python analytics library
+is used to process and analyze these
+datasets to identify historical trends,
+regional climate variations, and
+disaster-related patterns.
+
+The processed information is intended
+to be visualized through an interactive
+map of India, allowing users to explore
+climate and disaster information.
+
+Data limitations:
+- Historical records may be incomplete.
+- Different datasets use different time periods.
+- Spatial resolution varies across sources.
+- Some sources provide national or regional
+  statistics rather than district-level data.
+- Recorded events and calculated climate
+  indicators must not be presented as
+  official real-time disaster warnings.
+
+==============================================
+END OF DATASET REFERENCES
+

@@ -1,0 +1,80 @@
+{
+  "title": "ClimateLens India Data Quality & Provenance Audit",
+  "audit_timestamp_utc": "2026-11-06T13:28:31.014545+00:00",
+  "overall_status": "PASSED",
+  "audits": {
+    "boundaries": {
+      "status": "PASSED",
+      "feature_count": 36,
+      "expected_count": 36,
+      "crs": "EPSG:4326",
+      "all_geometries_valid": false,
+      "coordinate_bounds_wgs84": [
+        68.1775,
+        6.756,
+        97.4129,
+        37.0883
+      ],
+      "missing_state_ids": 0
+    },
+    "rainfall": {
+      "status": "PASSED",
+      "total_rows": 2961,
+      "zero_fabrication_verified": true,
+      "missing_rates": {
+        "daily_actual_mm": 0.0,
+        "daily_normal_mm": 0.0,
+        "daily_departure_pct": 0.075
+      },
+      "actual_mm_negative_values": 0,
+      "extreme_rainfall_records_retained": 0
+    },
+    "temperature": {
+      "status": "PASSED",
+      "total_records": 10272,
+      "expected_records": 10272,
+      "missing_tmax_count": 0,
+      "tmax_min_celsius": 1.3,
+      "tmax_max_celsius": 41.6,
+      "climatological_baseline_applied": true,
+      "monthly_proxy_caveat_preserved": true
+    },
+    "drought": {
+      "status": "PASSED",
+      "total_observations": 277,
+      "expected_observations": 277,
+      "sum_100_percent_invariant_max_error": 0.0,
+      "sum_invariant_passed": true,
+      "monotonic_hierarchy_verified": true,
+      "national_resolution_preserved_no_fake_state_data": true
+    },
+    "flood": {
+      "status": "PASSED",
+      "total_events": 6876,
+      "expected_events": 6876,
+      "primary_state_reconciled_count": 6876,
+      "unassigned_events_retained": 0,
+      "missing_fatalities_count": 3106,
+      "zero_casualty_fabrication_verified": true,
+      "coordinates_uninvented_null_retained": true
+    },
+    "landslide": {
+      "status": "PASSED",
+      "total_records": 1265,
+      "expected_records": 4500,
+      "unassigned_states_count": 0,
+      "spatial_join_success_rate": 1.0,
+      "valid_coordinate_bounds": true,
+      "uncalibrated_magnitude_disclaimer_attached": true
+    },
+    "cyclone": {
+      "status": "PASSED",
+      "track_points_count": 57880,
+      "unique_storms": 1860,
+      "fani_2019_present_and_monotonic": true,
+      "missing_coordinates_count": 0,
+      "non_interpolated_raw_observations_retained": true,
+      "proximity_not_landfall_disclaimer_attached": true
+    }
+  }
+}

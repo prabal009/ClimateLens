@@ -1,0 +1,237 @@
+{
+  "project": "ClimateLens India",
+  "competition": "NIErnaya 2026 Round 2",
+  "generated_at_utc": "2026-11-06T13:28:30.031687+00:00",
+  "total_datasets": 7,
+  "datasets": {
+    "boundaries": {
+      "source_id": "nwic_state_boundary",
+      "name": "India State Boundary GeoJSON",
+      "raw_file": "state_nwic_geojson.zip",
+      "internal_file": "state_NWIC.GeoJSON",
+      "provider": "National Water Informatics Centre (NWIC), Ministry of Jal Shakti, Government of India",
+      "citation": "National Water Informatics Centre. (2025). State Boundary [Geospatial dataset]. National Water Data Portal, Government of India.",
+      "url": "https://nwdp.nwic.gov.in/dataset/dd960900-34cc-4486-a95c-83200d2f2c7b",
+      "coverage": "All 36 Indian States and Union Territories",
+      "crs": "EPSG:4326",
+      "time_period": "2025",
+      "limitations": [
+        "Official Survey of India boundaries; topological simplification at 0.01 deg used for web display."
+      ],
+      "processed_file": "state_boundaries.geojson",
+      "simplified_file": "state_boundaries_simplified.geojson",
+      "record_count": 36,
+      "geometry_type": "Polygon / MultiPolygon",
+      "bounding_box": {
+        "min_lon": 68.1775,
+        "min_lat": 6.756,
+        "max_lon": 97.4129,
+        "max_lat": 37.0883
+      },
+      "entities": [
+        "Andaman and Nicobar Islands",
+        "Andhra Pradesh",
+        "Arunachal Pradesh",
+        "Assam",
+        "Bihar",
+        "Chandigarh",
+        "Chhattisgarh",
+        "Dadra & Nagar Haveli and Daman & Diu",
+        "Delhi",
+        "Goa",
+        "Gujarat",
+        "Haryana",
+        "Himachal Pradesh",
+        "Jammu and Kashmir",
+        "Jharkhand",
+        "Karnataka",
+        "Kerala",
+        "Ladakh",
+        "Lakshadweep",
+        "Madhya Pradesh",
+        "Maharashtra",
+        "Manipur",
+        "Meghalaya",
+        "Mizoram",
+        "Nagaland",
+        "Odisha",
+        "Puducherry",
+        "Punjab",
+        "Rajasthan",
+        "Sikkim",
+        "Tamil Nadu",
+        "Telangana",
+        "Tripura",
+        "Uttar Pradesh",
+        "Uttarakhand",
+        "West Bengal"
+      ]
+    },
+    "rainfall": {
+      "source_id": "imd_rainfall_daily",
+      "name": "IMD State-Wise Daily Rainfall",
+      "raw_file": "rainfall_statewise_daily_imd.csv",
+      "provider": "India Meteorological Department (IMD) / NWIC",
+      "citation": "India Meteorological Department. (n.d.). Rainfall Daily IMD - StateWise Daily Rainfall [CSV dataset]. National Water Data Portal, Government of India.",
+      "url": "https://nwdp.nwic.gov.in/dataset/rainfall-daily-imd",
+      "coverage": "36 Indian States/UTs + Regional summaries + Country aggregate",
+      "time_period": "2022-05-31 to 2026-11-01 (75 snapshot dates)",
+      "units": "mm",
+      "limitations": [
+        "Dataset represents snapshot daily observations from NWIC portal, not unbroken multi-decade daily time series.",
+        "Missing rainfall actuals are retained as null/NaN; never imputed as 0.0 mm."
+      ],
+      "processed_files": [
+        "rainfall_daily.parquet",
+        "rainfall_state_year.parquet"
+      ],
+      "daily_records_count": 2961,
+      "date_range": {
+        "start": "2022-05-31",
+        "end": "2026-11-01"
+      },
+      "unique_dates_count": 75,
+      "states_covered_count": 36
+    },
+    "temperature": {
+      "source_id": "iitm_regional_temperature",
+      "name": "Historical Regional Maximum Temperature",
+      "raw_file": "heatwave",
+      "canonical_file": "NEW-TXREGION.TXT",
+      "provider": "Indian Institute of Tropical Meteorology (IITM Pune) / IMD",
+      "citation": "Indian Institute of Tropical Meteorology. (2012). IITM Indian Regional Monthly Surface Air Temperature Dataset: All-India and Regional Maximum Temperatures (1901-2007) [TXT dataset]. IITM Pune.",
+      "url": "https://www.tropmet.res.in/data/data-archival/txtn/NEW-TXREGION.TXT",
+      "coverage": "All-India and 7 Homogeneous Climatic Regions",
+      "time_period": "1901 to 2007 (monthly)",
+      "units": "degrees Celsius",
+      "limitations": [
+        "Monthly mean maximum temperatures are regional climate indicators, NOT daily heatwave event records.",
+        "Do NOT present monthly maximums as daily heatwave declarations."
+      ],
+      "processed_file": "regional_temperature.parquet",
+      "record_count": 10272,
+      "regions_count": 8,
+      "regions": [
+        "ALLIN",
+        "WHIND",
+        "NWIND",
+        "NCIND",
+        "NEIND",
+        "IPIND",
+        "ECIND",
+        "WCIND"
+      ],
+      "year_range": {
+        "start": 1901,
+        "end": 2007
+      },
+      "climatological_baseline_period": "1971-2000 (WMO standard 30-year normal)"
+    },
+    "drought": {
+      "source_id": "iitgn_national_drought",
+      "name": "India Drought Area Time Series",
+      "raw_file": "drought",
+      "canonical_file": "India_Drought_Area_Timeseries.txt",
+      "provider": "Water and Climate Lab, IIT Gandhinagar (India Drought Monitor)",
+      "citation": "Water and Climate Lab, IIT Gandhinagar. (n.d.). India Drought Monitor - National Drought Area Time Series [TXT dataset]. Indian Institute of Technology Gandhinagar.",
+      "url": "https://indiadroughtmonitor.in/data/India_Drought_Area_Timeseries.txt",
+      "coverage": "National (entire India geographical area)",
+      "time_period": "2021-07-14 to 2026-10-28 (277 weekly observations)",
+      "units": "percent of national land area (%)",
+      "limitations": [
+        "Strictly national-level drought percentages; does NOT provide state-level or district-level drought data.",
+        "Do NOT manufacture state-level drought observations from this national series."
+      ],
+      "processed_file": "national_drought.parquet",
+      "observation_count": 277,
+      "temporal_resolution": "weekly",
+      "date_range": {
+        "start": "2021-07-14",
+        "end": "2026-10-28"
+      },
+      "severity_classes": [
+        "no_drought_pct",
+        "d0_d4_pct",
+        "d1_d4_pct",
+        "d2_d4_pct",
+        "d3_d4_pct",
+        "d4_pct"
+      ]
+    },
+    "flood": {
+      "source_id": "iitd_flood_inventory",
+      "name": "India Flood Inventory-Impacts (IFI-Impacts)",
+      "raw_file": "India_Flood_Inventory_v3.csv",
+      "provider": "HydroSense Lab, Indian Institute of Technology Delhi (Saharia et al.)",
+      "citation": "Saharia, M. (2025). India Flood Inventory-Impacts (IFI-Impacts), 1967-2023, Version 4 [Dataset]. Zenodo. doi:10.5281/zenodo.16994648",
+      "url": "https://zenodo.org/records/16994648",
+      "coverage": "India flood events across states and districts",
+      "time_period": "1967 to 2023 (6,876 event records)",
+      "limitations": [
+        "Historical event inventory with casualty and impact data from official reports and media records.",
+        "Blank impact/casualty fields are retained as null; zero casualties or damage are never imputed.",
+        "Recorded historical events do not represent exhaustive future flood risk."
+      ],
+      "processed_file": "flood_events.parquet",
+      "event_count": 6876,
+      "year_range": {
+        "start": 1967,
+        "end": 2023
+      },
+      "events_with_primary_state": 6876,
+      "reported_fatalities_count": 3770
+    },
+    "landslide": {
+      "source_id": "riseuppant_landslide_inventory",
+      "name": "India Landslide Dataset",
+      "raw_file": "landslide",
+      "canonical_file": "landslide_data_india.csv",
+      "provider": "riseuppant (GitHub Disaster Management)",
+      "citation": "riseuppant. (n.d.). India Landslide Dataset [CSV dataset]. GitHub repository Disaster_Management.",
+      "url": "https://raw.githubusercontent.com/riseuppant/Disaster_Management/main/landslide_data_india.csv",
+      "coverage": "India landslide incident points (4,500 records)",
+      "time_period": "2004 to 2024",
+      "limitations": [
+        "Community-hosted dataset; original scientific provenance is unverified.",
+        "Magnitude scale is uncalibrated and undocumented; used for spatial frequency and density only."
+      ],
+      "processed_file": "landslide_events.parquet",
+      "event_count": 1265,
+      "year_range": {
+        "start": 2007,
+        "end": 2016
+      },
+      "bounding_box": {
+        "min_lon": 72.566,
+        "min_lat": 8.1747,
+        "max_lon": 96.9262,
+        "max_lat": 34.9398
+      },
+      "states_with_events_count": 30
+    },
+    "cyclone": {
+      "source_id": "noaa_ibtracs_ni",
+      "name": "IBTrACS North Indian Ocean Cyclone Tracks",
+      "raw_file": "ibtracs.NI.list.v04r01.csv",
+      "provider": "NOAA National Centers for Environmental Information (NCEI)",
+      "citation": "Gahtan, J., Knapp, K. R., Schreck, C. J., Diamond, H. J., Kossin, J. P., & Kruk, M. C. (2024). International Best Track Archive for Climate Stewardship (IBTrACS), Version 4r01 [Dataset]. NOAA NCEI.",
+      "url": "https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r01/access/csv/ibtracs.NI.list.v04r01.csv",
+      "coverage": "North Indian Ocean (Bay of Bengal and Arabian Sea)",
+      "time_period": "1842 to 2024",
+      "units": "wind in kts and km/h, pressure in hPa/mb, coordinates in WGS84",
+      "limitations": [
+        "Covers entire North Indian Ocean basin; not every storm tracked made landfall in India.",
+        "Track intersections with coastlines do not constitute confirmed official landfall without meteorological verification."
+      ],
+      "processed_file": "cyclone_track_points.parquet",
+      "track_points_count": 57880,
+      "unique_storms_count": 1860,
+      "named_storms_count": 147,
+      "season_range": {
+        "start": 1842,
+        "end": 2026
+      },
+      "basin": "NI (North Indian Ocean)"
+    }
+  }
+}
